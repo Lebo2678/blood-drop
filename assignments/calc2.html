@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+
+        .calculator {
+            width: 500px;
+            background: linear-gradient(145deg, #2c2c2c, #3d3d3d);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .display-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .display {
+            width: 100%;
+            height: 80px;
+            background: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 2.2em;
+            color: #0f0;
+            text-align: right;
+            box-shadow: inset 0 0 10px #222;
+        }
+
+        .secondary-display {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 0.9em;
+            color: #bbb;
+            text-align: right;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .button {
+            padding: 18px;
+            font-size: 1em;
+            background: linear-gradient(145deg, #4d4d4d, #5c5c5c);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #fff;
+            text-align: center;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .button:hover {
+            background: linear-gradient(145deg, #5c5c5c, #6d6d6d);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .button:active {
+            background: #555;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+            transform: translateY(1px);
+        }
+
+        .button.special {
+            background: linear-gradient(145deg, #ff7a00, #ff9500);
+            color: #fff;
+        }
+
+        .button.special:hover {
+            background: linear-gradient(145deg, #ff9500, #ffa733);
+        }
+
+        .function-row {
+            grid-column: span 5;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .function-button {
+            padding: 10px 16px;
+            font-size: 0.9em;
+            background: #222;
+            border: 1px solid #555;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .function-button:hover {
+            background: #444;
+        }
+
+        .converter-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .converter-input {
+            width: 100px;
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 6px;
+            border: none;
+            margin-bottom: 10px;
+        }
+
+        .converter-result {
+            font-size: 1.5em;
+            color: #ff7a00;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display-container">
+            <div class="secondary-display" id="secondary-display"></div>
+            <input type="text" id="display" class="display" disabled>
+        </div>
+
+        <!-- Buttons for Calculator -->
+        <div class="function-row">
+            <button class="function-button" onclick="appendValue('Deg')">DEG</button>
+            <button class="function-button" onclick="appendValue('F-E')">F-E</button>
+            <button class="function-button" onclick="toggleConverter()">Converter</button>
+        </div>
+
+        <div class="buttons">
+            <button class="button" onclick="clearDisplay()">MC</button>
+            <button class="button" onclick="clearDisplay()">MR</button>
+            <button class="button" onclick="appendValue('M+')">M+</button>
+            <button class="button" onclick="appendValue('M-')">M-</button>
+            <button class="button" onclick="appendValue('MS')">MS</button>
+
+            <button class="button" onclick="appendValue('π')">π</button>
+            <button class="button" onclick="appendValue('e')">e</button>
+            <button class="button" onclick="appendValue('x²')">x²</button>
+            <button class="button" onclick="appendValue('√')">√x</button>
+            <button class="button" onclick="deleteLast()">DEL</button>
+
+            <button class="button" onclick="appendValue('|x|')">|x|</button>
+            <button class="button" onclick="appendValue('exp')">exp</button>
+            <button class="button" onclick="appendValue('mod')">mod</button>
+            <button class="button" onclick="appendValue('/')">/</button>
+            <button class="button" onclick="appendValue('n!')">n!</button>
+
+            <button class="button" onclick="appendValue('7')">7</button>
+            <button class="button" onclick="appendValue('8')">8</button>
+            <button class="button" onclick="appendValue('9')">9</button>
+            <button class="button" onclick="appendValue('*')">*</button>
+            <button class="button" onclick="appendValue('10^x')">10^x</button>
+
+            <button class="button" onclick="appendValue('4')">4</button>
+            <button class="button" onclick="appendValue('5')">5</button>
+            <button class="button" onclick="appendValue('6')">6</button>
+            <button class="button" onclick="appendValue('-')">-</button>
+            <button class="button" onclick="appendValue('log')">log</button>
+
+            <button class="button" onclick="appendValue('1')">1</button>
+            <button class="button" onclick="appendValue('2')">2</button>
+            <button class="button" onclick="appendValue('3')">3</button>
+            <button class="button" onclick="appendValue('+')">+</button>
+            <button class="button" onclick="appendValue('ln')">ln</button>
+
+            <button class="button" onclick="appendValue('+/-')">+/-</button>
+            <button class="button" onclick="appendValue('0')">0</button>
+            <button class="button" onclick="appendValue('.')">.</button>
+            <button class="button special" onclick="calculate()">=</button>
+
+            <!-- Bitwise operation buttons -->
+            <button class="button" onclick="appendValue('&')">AND</button>
+            <button class="button" onclick="appendValue('|')">OR</button>
+            <button class="button" onclick="appendValue('^')">XOR</button>
+            <button class="button" onclick="appendValue('~')">NOT</button>
+            <button class="button" onclick="appendValue('<<')"><<</button>
+            <button class="button" onclick="appendValue('>>')">>></button>
+            <!-- Existing buttons -->
+            <button class="button" onclick="appendValue('sin')">sin</button>
+            <button class="button" onclick="appendValue('cos')">cos</button>
+            <button class="button" onclick="appendValue('tan')">tan</button>
+            <button class="button" onclick="appendValue('asin')">asin</button>
+            <button class="button" onclick="appendValue('acos')">acos</button>
+            <button class="button" onclick="appendValue('atan')">atan</button>
+            <!-- Other buttons -->
+            <button class="function-button" onclick="setMode('deg')">DEG</button>
+            <button class="function-button" onclick="setMode('rad')">RAD</button>            
+        </div>
+
+        <!-- Temperature Converter -->
+        <div class="converter-container" id="converter-container">
+            <input type="number" id="inputValue" class="converter-input" placeholder="Value">
+            <select id="unitType" class="converter-input">
+                <option value="CtoF">Celsius to Fahrenheit</option>
+                <option value="FtoC">Fahrenheit to Celsius</option>
+            </select>
+            <button class="button" onclick="convertTemperature()">Convert</button>
+            <div id="converter-result" class="converter-result"></div>
+        </div>
+    </div>
+
+    <script>
+        let displayValue = "";
+        let secondaryDisplay = document.getElementById("secondary-display");
+        let display = document.getElementById("display");
+
+        function appendValue(value) {
+            displayValue += value;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            display.value = displayValue;
+        }
+
+        function clearDisplay() {
+            displayValue = "";
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            displayValue = displayValue.slice(0, -1);
+            updateDisplay();
+        }
+
+        function calculate() {
+            try {
+                let result = eval(displayValue);
+                displayValue = result.toString();
+                updateDisplay();
+            } catch (e) {
+                displayValue = "Error";
+                updateDisplay();
+            }
+        }
+
+        function toggleConverter() {
+            const converterContainer = document.getElementById("converter-container");
+            if (converterContainer.style.display === "none" || converterContainer.style.display === "") {
+                converterContainer.style.display = "block";
+            } else {
+                converterContainer.style.display = "none";
+            }
+        }
+
+        function convertTemperature() {
+            let value = parseFloat(document.getElementById("inputValue").value);
+            let unitType = document.getElementById("unitType").value;
+            let result;
+
+            if (unitType === "CtoF") {
+                result = (value * 9/5) + 32;
+                result = result.toFixed(2) + " °F";
+            } else if (unitType === "FtoC") {
+                result = (value - 32) * 5/9;
+                result = result.toFixed(2) + " °C";
+            }
+
+            document.getElementById("converter-result").innerText = result;
+        }
+        let isDegreeMode = true; // Default to degrees
+
+function setMode(mode) {
+    isDegreeMode = mode === 'deg';
+    secondaryDisplay.innerText = isDegreeMode ? 'DEG' : 'RAD';
+}
+
+function appendValue(value) {
+    if (['sin', 'cos', 'tan', 'csc', 'sec', 'cot', 'asin', 'acos', 'atan'].includes(value)) {
+        displayValue += value + '(';
+    } else if (value === ')') {
+        displayValue += ')';
+    } else {
+        displayValue += value;
+    }
+    updateDisplay();
+}
+function calculate() {
+    try {
+        let result;
+        if (displayValue.includes('sin') || displayValue.includes('cos') || displayValue.includes('tan') ||
+            displayValue.includes('asin') || displayValue.includes('acos') || displayValue.includes('atan') ||
+            displayValue.includes('csc') || displayValue.includes('sec') || displayValue.includes('cot')) {
+            // Handle trigonometric functions
+            const funcMatch = displayValue.match(/(sin|cos|tan|asin|acos|atan|csc|sec|cot)\(([^)]+)\)/);
+            if (funcMatch) {
+                const func = funcMatch[1];
+                let arg = parseFloat(funcMatch[2]);
+                if (isDegreeMode) {
+                    arg = arg * (Math.PI / 180); // Convert degrees to radians
+                }
+                switch (func) {
+                    case 'sin':
+                        result = Math.sin(arg);
+                        break;
+                    case 'cos':
+                        result = Math.cos(arg);
+                        break;
+                    case 'tan':
+                        result = Math.tan(arg);
+                        break;
+                    case 'asin':
+                        result = Math.asin(arg);
+                        break;
+                    case 'acos':
+                        result = Math.acos(arg);
+                        break;
+                    case 'atan':
+                        result = Math.atan(arg);
+                        break;
+                    case 'csc':
+                        result = 1 / Math.sin(arg);
+                        break;
+                    case 'sec':
+                        result = 1 / Math.cos(arg);
+                        break;
+                    case 'cot':
+                        result = 1 / Math.tan(arg);
+                        break;
+                }
+            }
+        } else {
+            // Handle other calculations
+            result = eval(displayValue);
+        }
+        displayValue = result.toString();
+        updateDisplay();
+    } catch (e) {
+        displayValue = "Error";
+        updateDisplay();
+    }
+}
+    </script>
+</body>
+</html>
